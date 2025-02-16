@@ -16,7 +16,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip
-          pip3 install transformers
+          pip3 install transformers torch
 
       - name: Запуск скрипта генерации контента
         run: python3 generate_content.py
