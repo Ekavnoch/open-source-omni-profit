@@ -22,9 +22,18 @@ jobs:
         run: python3 generate_content.py
 
       - name: Commit и push изменений
-        run: |
-          git config --local user.email "you@example.com"
-          git config --local user.name "Your Name"
-          git add .
-          git commit -m "Автоматическая генерация контента"
-          git push
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    # Настраиваем данные пользователя Git (будет использован GitHub Actor)
+    git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+    git config --global user.name "${{ github.actor }}"
+    
+    # Добавляем все изменения
+    git add .
+    
+    # Если изменений нет, выводим сообщение, но не завершаем работу с ошибкой
+    git commit -m "Автоматическая генерация контента" || echo "No changes to commit"
+    
+    # Пушим изменения, используя GITHUB_TOKEN для аутентификации
+    git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
